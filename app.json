@@ -13,7 +13,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.healthapp",
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "We need access to your health data to show activity and health stats.",
+        "NSHealthUpdateUsageDescription": "We need to update your health data for personalized insights.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +31,56 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-dev-client",
+      [
+        "react-native-health",
+        {
+          "healthPermissions": [
+            "StepCount",
+            "HeartRate",
+            "SleepAnalysis",
+            "BloodPressureSystolic",
+            "BloodPressureDiastolic",
+            "OxygenSaturation",
+            "RespiratoryRate",
+            "BodyTemperature",
+            "BloodGlucose"
+          ]
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4a9136d5-e0a3-4ea9-90b5-61418c1d7566"
+      }
+    }
+  },
+  "plugins": [
+    "expo-dev-client",
+    [
+      "react-native-health",
+      {
+        "healthPermissions": [
+          "StepCount",
+          "HeartRate",
+          "SleepAnalysis",
+          "BloodPressureSystolic",
+          "BloodPressureDiastolic",
+          "OxygenSaturation",
+          "RespiratoryRate",
+          "BodyTemperature",
+          "BloodGlucose"
+        ]
+      }
+    ]
+  ],
+  "ios": {
+    "bundleIdentifier": "com.yourcompany.healthapp",
+    "infoPlist": {
+      "NSHealthShareUsageDescription": "We need access to your health data to show activity and health stats.",
+      "NSHealthUpdateUsageDescription": "We need to update your health data for personalized insights."
     }
   }
 }

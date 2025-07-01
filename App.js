@@ -144,10 +144,10 @@ export default function App() {
   };
 
   const initializeHealthKit = () => {
-    AppleHealthKit.initHealthKit({
+    const options = {
       permissions: {
         read: [
-          'Steps',
+          'StepCount', // مطمئن شو این به جای 'Steps' هست
           'SleepAnalysis',
           'HeartRate',
           'BloodPressureSystolic',
@@ -158,17 +158,23 @@ export default function App() {
           'BloodGlucose',
         ],
       },
-    }, (err) => {
+    };
+
+    AppleHealthKit.initHealthKit(options, (err) => {
       if (err) {
-        console.error('HealthKit error:', err);
-        return setIsLoading(false);
+        console.error('HealthKit init error:', err);
+        setIsLoading(false);
+        return;
       }
-      fetchHealthKit();
+
+      fetchHealthKit(); // ادامه پردازش
     });
   };
 
   const fetchHealthKit = () => {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isoDate = today.toISOString();
     let data = { ...metrics };
     let done = 0;
     const trySet = () => {
@@ -176,16 +182,31 @@ export default function App() {
       if (done === 3) handleData(data);
     };
 
-    AppleHealthKit.getStepCount({ startDate: today.toISOString() }, (e, r) => {
-      if (!e) data.steps = r.value;
+    AppleHealthKit.getStepCount({ startDate: isoDate }, (err, res) => {
+      if (err) {
+        console.error("StepCount error:", err);
+      } else {
+        console.log("Fetched steps:", res);
+        data.steps = res.value;
+      }
       trySet();
     });
-    AppleHealthKit.getSleepSamples({ startDate: today.toISOString() }, (e, r) => {
-      if (!e) data.sleep = r.length;
+
+    AppleHealthKit.getSleepSamples({ startDate: isoDate }, (err, res) => {
+      if (err) {
+        console.error("Sleep error:", err);
+      } else {
+        data.sleep = res.length;
+      }
       trySet();
     });
-    AppleHealthKit.getHeartRateSamples({ startDate: today.toISOString() }, (e, r) => {
-      if (!e && r.length) data.heartRate = r[0].value;
+
+    AppleHealthKit.getHeartRateSamples({ startDate: isoDate }, (err, res) => {
+      if (err) {
+        console.error("HeartRate error:", err);
+      } else if (res && res.length > 0) {
+        data.heartRate = res[0].value;
+      }
       trySet();
     });
   };
