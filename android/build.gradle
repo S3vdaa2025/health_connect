@@ -1,31 +1,43 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+🛠 نسخه نهایی پیشنهادی build.gradle با مخازن کامل:
+groovy
+Copy
+Edit
 buildscript {
   repositories {
+    // آینه‌های کامل برای Android Tools
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    maven { url 'https://maven.google.com' }
+
+    // fallback
     google()
     mavenCentral()
   }
   dependencies {
-    classpath("com.android.tools.build:gradle:8.1.0")
+    classpath("com.android.tools.build:gradle:8.1.1")
     classpath("com.facebook.react:react-native-gradle-plugin:0.79.3")
-    classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
   }
 }
 
 def reactNativeAndroidDir = new File(
-  providers.exec {
-    workingDir(rootDir)
-    commandLine("node", "--print", "require.resolve('react-native/package.json')")
-  }.standardOutput.asText.get().trim(),
-  "../android"
+        providers.exec {
+          workingDir(rootDir)
+          commandLine("node", "--print", "require.resolve('react-native/package.json')")
+        }.standardOutput.asText.get().trim(),
+        "../android"
 )
 
 allprojects {
   repositories {
-    maven {
-      // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-      url(reactNativeAndroidDir)
-    }
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    maven { url 'https://maven.google.com' }
+
+    maven { url(reactNativeAndroidDir) }
 
     google()
     mavenCentral()
